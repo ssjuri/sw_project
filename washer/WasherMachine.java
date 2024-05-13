@@ -15,6 +15,7 @@ public class WasherMachine {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
+
         JButton normalWasherButton = new JButton("일반 세탁기(세탁+헹굼+탈수)");
         JButton drumWasherButton = new JButton("드럼 세탁기(세탁+헹굼+탈수+건조:추가금 발생)");
 
@@ -61,9 +62,9 @@ public class WasherMachine {
         weightFrame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // 가운데 정렬 및 간격 조절
 
-        JLabel label = new JLabel("세탁물의 무게를 입력하세요:");
+        JLabel label = new JLabel("세탁물의 무게를 입력하세요");
         JTextField weightField = new JTextField(10);
         JButton confirmButton = new JButton("세탁하러 가기");
         confirmButton.addActionListener(new ActionListener() {
@@ -140,11 +141,11 @@ public class WasherMachine {
 
         JLabel label = new JLabel();
         if (weight <= 2) {
-            label.setText("0-2kg 범위이므로 세탁비는 5천원입니다.");
+            label.setText("0-2kg 범위이므로 세탁비는 오천원입니다.");
         } else if (weight <= 4) {
             label.setText("2-4kg 범위이므로 세탁비는 만원입니다.");
         } else if (weight <= 6) {
-            label.setText("4-6kg 범위이므로 세탁비는 만 5천원입니다.");
+            label.setText("4-6kg 범위이므로 세탁비는 만 오천원입니다.");
         } else {
             label.setText("6kg 이상은 처리할 수 없습니다.");
         }
@@ -157,39 +158,40 @@ public class WasherMachine {
 
         panel.add(label);
 
-
-
         if (washer instanceof NormalWasher) {
+
             JButton warmWaterButton = new JButton("온수 세탁");
             JButton coldWaterButton = new JButton("냉수 세탁");
             JButton NrinseButton = new JButton("헹굼 선택하러 가기");
             NrinseButton.setEnabled(false); // 초기에는 비활성화 상태로 설정
 
+            panel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // 가운데 정렬 및 간격 조절
+
             warmWaterButton.addActionListener(e -> {
                 NomalWashTemperatureStrategy strategy = new WarmWaterStrategy();
                 strategy.execute();
-                        // 5초 뒤에 헹구러 가기 버튼 활성화
-                        Timer timer = new Timer(5000, new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                NrinseButton.setEnabled(true);
-                                ((Timer) e.getSource()).stop(); // 타이머 중지
-                            }
-                        });
-                        timer.start();
+                // 5초 뒤에 헹구러 가기 버튼 활성화
+                Timer timer = new Timer(5000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NrinseButton.setEnabled(true);
+                        ((Timer) e.getSource()).stop(); // 타이머 중지
+                    }
+                });
+                timer.start();
 
-                        // 5초 카운트 다운 출력
-                        Thread countdownThread = new Thread(() -> {
-                            for (int i = 5; i > 0; i--) {
-                                System.out.println("세탁 완료까지 "+i + "초 남았습니다.");
-                                try {
-                                    Thread.sleep(1000); // 1초 대기
-                                } catch (InterruptedException ex) {
-                                    ex.printStackTrace();
-                                }
-                            }
-                        });
-                        countdownThread.start();
+                // 5초 카운트 다운 출력
+                Thread countdownThread = new Thread(() -> {
+                    for (int i = 5; i > 0; i--) {
+                        System.out.println("세탁 완료까지 "+i + "초 남았습니다.");
+                        try {
+                            Thread.sleep(1000); // 1초 대기
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                countdownThread.start();
 
 
             });
@@ -223,7 +225,7 @@ public class WasherMachine {
 
             });
 
-            //일밤 헹굼 창과 버튼
+            //일반 헹굼 창과 버튼
             NrinseButton.addActionListener(e -> {
 
                 JFrame additionalRinseFrame = new JFrame("추가 헹굼 선택");
@@ -240,6 +242,8 @@ public class WasherMachine {
                 JButton rinse4TimesButton = new JButton("헹굼 4회 (추가비용 +1000원)");
                 JButton spindry = new JButton("탈수하러 가기");
                 spindry.setEnabled(false); // 초기에는 비활성화 상태로 설정
+
+                additionalRinsePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 13, 13));
 
                 rinse2TimesButton.addActionListener(e2 -> {
                     System.out.println("헹굼 2회 선택");
@@ -393,7 +397,7 @@ public class WasherMachine {
                                     }
                                 });
 
-// 드럼 세탁기의 헹굼 선택 후 최종금액을 계산하고 보여주는 로직
+                                // 드럼 세탁기의 헹굼 선택 후 최종금액을 계산하고 보여주는 로직
                                 money.addActionListener(new ActionListener() {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
@@ -586,7 +590,7 @@ public class WasherMachine {
                         System.out.println("헹굼 2회 선택");
                         countDown(4);
                         spindry.setEnabled(true);
-                      //  rinseFrequencyFrame.dispose(); // 창 닫기
+                        //  rinseFrequencyFrame.dispose(); // 창 닫기
                     }
                 });
 
